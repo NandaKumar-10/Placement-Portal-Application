@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 from sqlalchemy.orm import Mapped, mapped_column, relationship, join
+import bcrypt
 
 db = SQLAlchemy()
 
@@ -14,6 +15,13 @@ class Users(db.Model):
 
     company = relationship("Company", back_populates="user", uselist = False)
     student = relationship("Students", back_populates="user", uselist = False)
+
+    def check_password(self,password):
+        return bcrypt.checkpw(password.encode('UTF-8'), self.password.encode('UTF-8'))
+    
+    def set_password(self,password):
+        return bcrypt.hashpw(password.encode('UTF-8'), bcrypt.gensalt()).decode('UTF-8')
+
 
 class Company(db.Model):
     __tablename__ = "Companies"

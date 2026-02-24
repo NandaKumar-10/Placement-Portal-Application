@@ -1,12 +1,13 @@
 <script setup>
-import {ref} from 'vue'
 
-  const name = ref('hello')
+import {RouterView} from 'vue-router'
+
 </script>
 
 <template>
   <div>
-    <p>Hello from vue {{ name }}</p>
+    <RouterView/>
+    <!-- <p>Hello from vue {{ name }}</p> -->
   </div>
 </template>
 
