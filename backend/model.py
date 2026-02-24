@@ -16,11 +16,14 @@ class Users(db.Model):
     company = relationship("Company", back_populates="user", uselist = False)
     student = relationship("Students", back_populates="user", uselist = False)
 
+    def __init__(self,email,name,password,role):
+        self.name = name
+        self.email = email
+        self.password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
+        self.role = role
+
     def check_password(self,password):
         return bcrypt.checkpw(password.encode('UTF-8'), self.password.encode('UTF-8'))
-    
-    def set_password(self,password):
-        return bcrypt.hashpw(password.encode('UTF-8'), bcrypt.gensalt()).decode('UTF-8')
 
 
 class Company(db.Model):
@@ -43,6 +46,13 @@ class Students(db.Model):
     cgpa: Mapped[float] = mapped_column(Float)
     year: Mapped[int] = mapped_column(Integer)
     resume_url: Mapped[str] = mapped_column(String(300), nullable = False)
+
+    def __init__(self,user_id,branch,cgpa,year,resume_url):
+        self.user_id = user_id
+        self.branch = branch
+        self.cgpa = cgpa
+        self.year = year
+        self.resume_url = resume_url
 
     user = relationship("Users", back_populates="student")
     applications = relationship("Application", back_populates = "student")
