@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from model import *
-from auth import token_required,admin_required
+from .auth import token_required,admin_required
 import datetime
 
 admin_routes = Blueprint("admin_route", __name__)
@@ -99,7 +99,7 @@ def get_all_companies():
             "company_name": comp.company_name,
             "hr_contact": comp.hr_contact,
             "website": comp.website,
-            "approval_status": "Approved" if comp.approval_status else "Pending/Rejected"
+            "approval_status": "Approved" if comp.approval_status else "Pending"
         })
     return jsonify(result), 200
 
@@ -228,6 +228,8 @@ def blacklist_user():
 
     
 @admin_routes.route('/admin/statistics', methods=['GET'])
+@token_required
+@admin_required
 def get_placement_statistics():
     total_students = db.session.query(func.count(Students.student_id)).scalar()
     total_companies = db.session.query(func.count(Company.company_id)).scalar()

@@ -44,7 +44,7 @@ def admin_required(f):
 @auth.route('/login',methods = ['POST'])
 def login():
     data = request.get_json()
-    username = data.get('username')
+    username = data.get('email')
     password = data.get('password')
     if not username or not password:
         return jsonify({"error":"Enter Username or password"}), 400
@@ -62,7 +62,7 @@ def login():
 
         token = jwt.encode(jwt_payload, current_app.config['SECRET_KEY'],algorithm='HS256')
 
-        return jsonify({"token":token}), 200
+        return jsonify({"token":token,"role":user.role}), 200
     else:
         return jsonify({"error" : "Invalid Username or Password"}), 200
 

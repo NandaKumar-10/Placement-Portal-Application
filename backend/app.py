@@ -7,6 +7,8 @@ from routes.student import student_route
 
 app = Flask(__name__)
 
+CORS(app,supports_credentials=True)
+
 app.config['SECRET_KEY'] = 'gLqw7i_L_NLS08kSHtTeJMGz3HVRN6l8T2kPeLFWNe8'
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///placement.db"
 

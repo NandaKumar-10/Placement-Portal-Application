@@ -1,9 +1,9 @@
 from flask import request, jsonify, Blueprint, current_app
 from model import *
-from auth import token_required
+from .auth import token_required
 import datetime
 
-student_route = Blueprint(__name__)
+student_route = Blueprint("student_routes",__name__)
 
 @student_route.route("/student/register")
 @token_required

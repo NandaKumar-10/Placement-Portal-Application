@@ -1,19 +1,95 @@
 <template>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-    </div>
+  <div class="container-fluid min-vh-100 d-flex p-0">
+    <div class="row w-100 m-0">
+      <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center bg-primary text-white text-center">
+        <i class="bi bi-mortarboard-fill display-1 mb-3"></i>
+        <h1 class="fw-bold">University Placement</h1>
+        <p class="fs-5 text-white-50">Manage your career journey efficiently.</p>
+      </div>
 
+      <div class="col-md-6 d-flex justify-content-center align-items-center bg-white">
+        <div class="login-box w-75" style="max-width: 400px;">
+          
+          <h3 class="fw-bold mb-1">Welcome Back</h3>
+          <p class="text-muted mb-4">Please enter your details to sign in.</p>
+
+          <form @submit.prevent="handleLogin">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" class="form-control" placeholder="admin@university.edu" v-model="email" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Password</label>
+              <input type="password" class="form-control" placeholder="Enter your password" v-model="password" required>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
+              </div>
+              <a href="#" class="text-decoration-none small text-primary fw-bold">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Sign In</button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import api from "../api"; 
 
+const email = ref("");
+const password = ref("");
+const loading = ref(false);
+const router = useRouter();
+
+const handleLogin = async () => {
+  if (!email.value || !password.value) return alert("Missing fields");
+
+  loading.value = true;
+  try {
+    const res = await api.post("/login", {
+      email: email.value, 
+      password: password.value
+    });
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.role); 
+    window.dispatchEvent(new Event("auth-changed"));
+    
+    if (res.data.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/student");
+    }
+
+  } catch (error) {
+    console.log(error);
+    alert("Login failed. Check credentials.");
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
-<style>
-
+<style scoped>
+  .bg-primary {
+    background-color: #2563EB !important;
+  }
+  .btn-primary {
+    background-color: #2563EB;
+    border-color: #2563EB;
+  }
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
 </style>
