@@ -29,7 +29,7 @@
                 <input class="form-check-input" type="checkbox" id="rememberMe">
                 <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
               </div>
-              <a href="#" class="text-decoration-none small text-primary fw-bold">Forgot password?</a>
+              <a href="/register" class="text-decoration-none small text-primary fw-bold">New to this?</a>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Sign In</button>
@@ -68,14 +68,19 @@ const handleLogin = async () => {
     
     if (res.data.role === "admin") {
       router.push("/admin");
-    } else {
-      router.push("/student");
+    }
+    else if (res.data.role === 'Company'){
+      router.push("/company/dashboard");
+    }
+    else {
+      router.push("/student/dashboard");
     }
 
-  } catch (error) {
-    console.log(error);
+  } 
+  catch (error) {
     alert("Login failed. Check credentials.");
-  } finally {
+  } 
+  finally {
     loading.value = false;
   }
 };

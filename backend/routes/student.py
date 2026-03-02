@@ -1,12 +1,47 @@
 from flask import request, jsonify, Blueprint, current_app
 from model import *
-from .auth import token_required
+from .auth import token_required,student_requried
 import datetime
 
 student_route = Blueprint("student_routes",__name__)
 
-@student_route.route("/student/register")
+@student_route.route('/student/dashboard', methods=['GET'])
 @token_required
+@student_requried
+def student_dashboard(current_user):
+    student = Students.query.filter_by(user_id=current_user.user_id).first()
+    
+    if not student:
+        return jsonify({'error': 'Student profile not found'}), 404
+
+    apps = db.session.query(Application, PlacementDrive, Company)\
+        .join(PlacementDrive, Application.drive_id == PlacementDrive.drive_id)\
+        .join(Company, PlacementDrive.company_id == Company.company_id)\
+        .filter(Application.student_id == student.student_id)\
+        .order_by(Application.application_date.desc())\
+        .limit(5).all()
+
+    recent_applications = []
+    for app, drive, company in apps:
+        recent_applications.append({
+            "id": app.application_id,
+            "company_name": company.company_name,
+            "job_title": drive.job_title,
+            "applied_date": app.application_date.strftime("%b %d, %Y") if app.application_date else "N/A",
+            "status": app.status
+        })
+
+    return jsonify({ "profile": {
+            "name": current_user.name,
+            "branch": student.branch,
+            "cgpa": student.cgpa,
+            "year": student.year
+        },
+        "applications": recent_applications}), 200
+
+@student_route.route("/student/register", methods=['POST'])
+@token_required
+@student_requried
 def student_register():
     data = request.get_json()
     new_user = Users(
@@ -29,9 +64,10 @@ def student_register():
 
     return jsonify({'message': 'Student registered successfully', 'student_id': new_student.student_id}), 201
 
-@student_route.route('/student/drives', methods=['GET'])
+@student_route.route('/student/drive', methods=['GET'])
 @token_required
-def get_drives():
+@student_requried
+def get_drives(current_user):
     min_cgpa = request.args.get('cgpa', type=float)
     target_branch = request.args.get('branch')
     query = db.session.query(PlacementDrive, Company).join(Company).filter(PlacementDrive.status == 'Approved')
@@ -57,7 +93,9 @@ def get_drives():
     return jsonify(result), 200
 
 @student_route.route('/student/apply', methods=['POST'])
-def apply_for_drive():
+@token_required
+@student_requried
+def apply_for_drive(current_user):
     data = request.get_json()
     student_id = data.get('student_id')
     drive_id = data.get('drive_id')
@@ -84,6 +122,8 @@ def apply_for_drive():
     return jsonify({'message': 'Application submitted successfully'}), 200
 
 @student_route.route('/student/my-applications/<int:student_id>', methods=['GET'])
+@token_required
+@student_requried
 def get_my_applications(student_id):
     apps = db.session.query(Application, PlacementDrive, Company)\
         .join(PlacementDrive, Application.drive_id == PlacementDrive.drive_id)\
@@ -109,27 +149,33 @@ def get_my_applications(student_id):
 
     return jsonify({"active_applications": current_apps, "history": history}), 200
 
-@student_route.route('/student/profile/<int:student_id>', methods=['GET', 'PUT'])
-def manage_profile(student_id):
-    student = db.session.get(Students, student_id)
-    user = db.session.get(Users, student.user_id)
+@student_route.route('/student/edit-profile', methods=['GET', 'PUT'])
+@token_required
+@student_requried
+def manage_profile(current_user):
+    student = Students.query.filter_by(user_id=current_user.user_id).first()
+    
+    if not student:
+        return jsonify({'error': 'Student profile not found'}), 404
 
     if request.method == 'GET':
         return jsonify({
-            "name": user.name,
-            "email": user.email,
+            "name": current_user.name,
+            "email": current_user.email,
             "branch": student.branch,
             "cgpa": student.cgpa,
             "resume_url": student.resume_url,
             "year": student.year
-        })
+        }), 200
 
     if request.method == 'PUT':
         data = request.get_json()
+        
         if 'branch' in data: student.branch = data['branch']
         if 'cgpa' in data: student.cgpa = data['cgpa']
         if 'year' in data: student.year = data['year']
         if 'resume_url' in data: student.resume_url = data['resume_url']
-        if 'name' in data: user.name = data['name']
+        if 'name' in data: current_user.name = data['name']
+        
         db.session.commit()
         return jsonify({'message': 'Profile updated successfully'}), 200

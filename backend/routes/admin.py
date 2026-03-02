@@ -278,3 +278,60 @@ def get_placement_statistics():
         }
 
     return jsonify(report), 200
+
+@admin_routes.route('/admin/drive/<int:drive_id>', methods=['GET', 'PUT'])
+@token_required
+@admin_required
+def manage_drive(drive_id):
+    if request.method == 'PUT':
+        data = request.get_json()
+        new_status = data.get('status')
+        
+        if not new_status:
+            return jsonify({'error': 'Missing status field'}), 400
+
+        drive = PlacementDrive.query.get(drive_id)
+        if not drive:
+            return jsonify({'error': 'Drive not found'}), 404
+        
+        drive.status = new_status
+        db.session.commit()
+        
+        return jsonify({'message': f'Drive status successfully updated to {new_status}'}), 200
+
+    if request.method == 'GET':
+        drive = db.session.query(PlacementDrive, Company)\
+            .join(Company, PlacementDrive.company_id == Company.company_id)\
+            .filter(PlacementDrive.drive_id == drive_id).first()
+
+        if not drive:
+            return jsonify({'error': 'Drive not found'}), 404
+
+        drive_data, company_data = drive
+        applications = db.session.query(Application, Students, Users)\
+            .join(Students, Application.student_id == Students.student_id)\
+            .join(Users, Students.user_id == Users.user_id)\
+            .filter(Application.drive_id == drive_id).all()
+
+        app_list = []
+        for app, student, user in applications:
+            app_list.append({
+                "application_id": app.application_id,
+                "student_name": user.name,
+                "branch": student.branch,
+                "cgpa": student.cgpa,
+                "status": app.status,
+                "resume_url": student.resume_url
+            })
+
+        # 3. Return it all together
+        return jsonify({
+            "drive_details": {
+                "job_title": drive_data.job_title,
+                "company_name": company_data.company_name,
+                "deadline": str(drive_data.application_deadline),
+                "eligibility_cgpa": drive_data.eligibility_cgpa,
+                "status": drive_data.status
+            },
+            "applicants": app_list
+        }), 200

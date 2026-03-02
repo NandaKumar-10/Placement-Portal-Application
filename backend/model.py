@@ -38,6 +38,12 @@ class Company(db.Model):
     user = relationship("Users", back_populates="company")
     placement_drives = relationship("PlacementDrive", back_populates="company")
 
+    def __init__(self,user_id,company_name,hr_contact,website):
+        self.user_id = user_id
+        self.company_name = company_name
+        self.hr_contact = hr_contact
+        self.website = website
+
 class Students(db.Model):
     __tablename__ = "Students"
     student_id: Mapped[int] = mapped_column(primary_key = True)
@@ -72,6 +78,15 @@ class PlacementDrive(db.Model):
     company = relationship("Company", back_populates="placement_drives")
     applications = relationship("Application",back_populates="drive")
 
+    def __init__(self,company_id,job_title,eligibility_branch,eligibility_cgpa,eligibility_year,application_deadline,status):
+        self.company_id = company_id
+        self.job_title =  job_title
+        self.eligibility_branch = eligibility_branch
+        self.eligibility_cgpa = eligibility_cgpa
+        self.eligibility_year = eligibility_year
+        self.application_deadline = application_deadline
+        self.status = status
+
 class Application(db.Model):
     __tablename__ = "Application"
     application_id: Mapped[int] = mapped_column(primary_key = True)
@@ -82,6 +97,12 @@ class Application(db.Model):
 
     student = relationship("Students", back_populates = "applications")
     drive = relationship("PlacementDrive", back_populates = "applications")
+
+    def __init__(self,student_id,drive_id,application_date,status):
+        self.student_id = student_id
+        self.drive_id = drive_id
+        self.application_date = application_date
+        self.status = status
 
 if __name__ == "__main__":
     db.create_all()

@@ -41,6 +41,23 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
+def company_required(f):
+    @wraps(f)
+    def decorated(current_user, *args, **kwargs):
+        # Make sure the string matches exactly how you store it in the DB (e.g., 'Company' or 'company')
+        if current_user.role != 'Company': 
+            return jsonify({'message': 'Companies only!'}), 403
+        return f(current_user, *args, **kwargs)
+    return decorated
+
+def student_requried(f):
+    @wraps(f)
+    def decorated(current_user, *args, **kwargs):
+        if current_user.role != 'Student':
+            return jsonify({"message":'Students only!'}), 403
+        return f(current_user, *args, **kwargs)
+    return decorated
+
 @auth.route('/login',methods = ['POST'])
 def login():
     data = request.get_json()
@@ -66,27 +83,44 @@ def login():
     else:
         return jsonify({"error" : "Invalid Username or Password"}), 200
 
-@auth.route('/signup',methods = ['POST'])
+@auth.route('/register',methods = ['POST'])
 def signup():
     data = request.get_json()
     
-    username = data.get('username')
+    name = data.get('name')
     email = data.get('email')
     password = data.get('password')
     role = data.get('role')
 
-    if not username or not email or not password:
+    if not name or not email or not password:
         return jsonify({"message": "Missing username, email, or password"}), 400
 
     if Users.query.filter_by(email=email).first():
         return jsonify({"message": "User with this email already exists"}), 409
     
-    if Users.query.filter_by(name=username).first():
+    if Users.query.filter_by(name=name).first():
         return jsonify({"message": "Username is already taken"}), 409
-
-    new_user = Users(name = username, email = email, password = password, role = role)
     
-    db.session.add(new_user)
+    if role == "Student":
+        new_user = Users(name = name, email = email, password = password, role = role)
+        db.session.add(new_user)
+        db.session.flush()
+        student_branch = data.get('branch')
+        student_cgpa = data.get('cgpa')
+        student_year = data.get('year')
+        student_resume = data.get('resume')
+        new_student = Students(user_id=new_user.user_id,branch=student_branch,cgpa=student_cgpa,
+                               year=student_year,resume_url=student_resume)
+        db.session.add(new_student)
+    else:
+        new_user = Users(name = name, email = email, password = password, role = role)
+        db.session.add(new_user)
+        db.session.flush()
+        new_company_hr = data.get('hrContact')
+        new_company_website = data.get('website')
+        new_company = Company(user_id=new_user.user_id,company_name=name,hr_contact=new_company_hr,
+                              website=new_company_website)
+        db.session.add(new_company)
     db.session.commit()
 
     return jsonify({"message": "User registered successfully!"}), 201

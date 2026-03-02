@@ -130,15 +130,32 @@
                 <td class="py-3 border-light text-secondary">
                   {{ new Date(drive.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}
                 </td>
-                <td class="py-3 border-light">
+                <td class="py-3 border-light text-center">
+                <button v-if="drive.status === 'Pending'" 
+                        @click="updateDriveStatus(drive.drive_id, 'Approved')" 
+                        class="btn btn-sm btn-success me-1 rounded-pill px-2 shadow-sm" title="Approve Drive">
+                  <i class="bi bi-check-lg"></i>
+                </button>
+                
+                <button v-if="drive.status === 'Pending'" 
+                        @click="updateDriveStatus(drive.drive_id, 'Rejected')" 
+                        class="btn btn-sm btn-danger me-2 rounded-pill px-2 shadow-sm" title="Reject Drive">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+
+                <button @click="viewDriveDetails(drive.drive_id)" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
+                  Details
+                </button>
+              </td>
+                <!-- <td class="py-3 border-light">
                   <span class="badge rounded-pill fw-medium" 
                         :class="drive.status === 'Approved' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'">
                     {{ drive.status === 'Approved' ? 'Active' : drive.status }}
                   </span>
                 </td>
                 <td class="py-3 border-light text-center">
-                  <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">Details</button>
-                </td>
+                  <button @click="viewDriveDetails(drive.drive_id)" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">Details</button>
+                </td> -->
               </tr>
             </tbody>
             <tbody v-else>
@@ -165,19 +182,33 @@ const drives = ref([]);
 
 const fetchData = async () => {
   try {
-    // 1. Fetch Stats for the cards
     const statsRes = await api.get('/admin/statistics');
     stats.value = statsRes.data;
 
-    // 2. Fetch Placement Drives for the table
     const drivesRes = await api.get('/admin/placement-drives');
-    // Keep only the 5 most recent drives for the dashboard table
     drives.value = drivesRes.data.slice(0, 5); 
   } catch (err) {
     console.error("Error fetching data:", err);
     if (err.response && err.response.status === 401) {
       handleLogout();
     }
+  }
+};
+
+const viewDriveDetails = (driveId) => {
+  router.push(`/admin/drive/${driveId}`);
+};
+
+const updateDriveStatus = async (driveId, newStatus) => {
+  if (!confirm(`Are you sure you want to mark this drive as ${newStatus}?`)) return;
+
+  try {
+    await api.put(`/admin/drive/${driveId}`, { status: newStatus });
+    await fetchData();
+  } 
+  catch (err) {
+    console.error("Error updating drive status:", err);
+    alert("Failed to update drive status.");
   }
 };
 
@@ -194,27 +225,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
-    /* Typography Base */
     .font-sans {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
-    /* Sidebar Custom Styling */
     .sidebar {
     width: 260px;
-    background-color: #111827; /* Dark navy from the image */
+    background-color: #111827;
     }
 
     .tracking-wide {
     letter-spacing: 0.5px;
     }
 
-    /* Navigation Links */
     .nav-pills .nav-link {
     border-radius: 8px;
     padding: 12px 16px;
     margin-bottom: 4px;
-    color: #9ca3af !important; /* Muted gray for inactive */
+    color: #9ca3af !important;
     transition: all 0.2s ease;
     }
 
@@ -224,16 +252,14 @@ onMounted(() => {
     }
 
     .nav-pills .nav-link.active {
-    background-color: #1f2937 !important; /* Slightly lighter dark */
+    background-color: #1f2937 !important;
     color: white !important;
     position: relative;
     }
-
-    /* The blue accent line on the active sidebar link */
     .nav-pills .nav-link.active::before {
     content: '';
     position: absolute;
-    left: -16px; /* Adjust based on padding */
+    left: -16px;
     top: 10%;
     height: 80%;
     width: 4px;
@@ -241,7 +267,6 @@ onMounted(() => {
     border-radius: 0 4px 4px 0;
     }
 
-    /* Card Icons Backgrounds */
     .icon-box {
     width: 50px;
     height: 50px;
@@ -253,7 +278,6 @@ onMounted(() => {
     background-color: #f0fdf4;
     }
 
-    /* Table styling */
     .table th {
     text-transform: capitalize;
     font-size: 0.9rem;
@@ -269,8 +293,7 @@ onMounted(() => {
     background-color: #eff6ff;
     border-color: #3b82f6;
     }
-
-    /* Badges */
+    
     .bg-success-subtle {
     background-color: #dcfce7 !important;
     }
