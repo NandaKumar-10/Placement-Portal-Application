@@ -119,7 +119,6 @@ const fetchDriveDetails = async () => {
   } 
   catch (error) {
     console.error(error);
-    // alert("Failed to load drive details.");
     router.push('/admin');
   } 
   finally {
@@ -137,9 +136,27 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-.sidebar { width: 260px; background-color: #111827; }
-.tracking-wide { letter-spacing: 0.5px; }
-.bg-success-subtle { background-color: #dcfce7 !important; }
-.bg-warning-subtle { background-color: #fef3c7 !important; color: #d97706 !important; }
+.font-sans { 
+  font-family: 'Inter', 
+  -apple-system, sans-serif; 
+}
+
+.sidebar { 
+  width: 260px; 
+  background-color: #111827; 
+}
+
+.tracking-wide { 
+  letter-spacing: 0.5px; 
+}
+
+.bg-success-subtle { 
+  background-color: #dcfce7 !important; 
+}
+
+.bg-warning-subtle { 
+  background-color: #fef3c7 !important; 
+  color: #d97706 !important; 
+  }
+
 </style>

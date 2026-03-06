@@ -9,12 +9,12 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li>
-          <router-link to="/student" class="nav-link text-white d-flex align-items-center">
+          <router-link to="/student/dashboard" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-house-door me-3 fs-5"></i> My Profile
           </router-link>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link active d-flex align-items-center">
+          <a href="/student/drive" class="nav-link active d-flex align-items-center">
             <i class="bi bi-search me-3 fs-5"></i> Find Placement Drive
           </a>
         </li>
@@ -82,11 +82,11 @@
               
               <button 
                 @click="applyForDrive(drive.drive_id)" 
-                class="btn btn-outline-primary w-100 fw-semibold rounded-pill"
-                :disabled="applying === drive.drive_id">
-                {{ applying === drive.drive_id ? 'Applying...' : 'Apply Now' }}
+                class="btn w-100 fw-semibold rounded-pill"
+                :class="drive.has_applied ? 'btn-secondary text-white border-0' : 'btn-outline-primary'"
+                :disabled="applying === drive.drive_id || drive.has_applied">
+                {{drive.has_applied ? 'Already Applied' : (applying === drive.drive_id ? 'Applying...' : 'Apply Now') }}
               </button>
-
             </div>
           </div>
         </div>
@@ -146,6 +146,7 @@ const applyForDrive = async (driveId) => {
   try {
     const res = await api.post('/student/apply', { drive_id: driveId });
     alert(res.data.message || "Successfully applied!");
+    
   } catch (error) {
     console.error(error);
     alert(error.response?.data?.error || "Failed to apply.");
@@ -171,21 +172,62 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-.sidebar { width: 260px; background-color: #111827; }
-.tracking-wide { letter-spacing: 0.5px; }
+.font-sans { 
+  font-family: 'Inter', 
+  -apple-system, sans-serif; 
+}
 
-.nav-pills .nav-link { border-radius: 8px; padding: 12px 16px; margin-bottom: 4px; color: #9ca3af !important; transition: all 0.2s ease; }
-.nav-pills .nav-link:hover { background-color: rgba(255, 255, 255, 0.05); color: white !important; }
-.nav-pills .nav-link.active { background-color: #1f2937 !important; color: white !important; position: relative; }
-.nav-pills .nav-link.active::before { content: ''; position: absolute; left: -16px; top: 10%; height: 80%; width: 4px; background-color: #3b82f6; border-radius: 0 4px 4px 0; }
+.sidebar { 
+  width: 260px; 
+  background-color: #111827; 
+}
 
-.bg-blue-light { background-color: #eff6ff; }
-.bg-secondary-subtle { background-color: #f3f4f6 !important; }
+.tracking-wide { 
+  letter-spacing: 0.5px; 
+}
+
+.nav-pills .nav-link { 
+  border-radius: 8px; 
+  padding: 12px 16px; 
+  margin-bottom: 4px; 
+  color: #9ca3af !important; 
+  transition: all 0.2s ease; 
+}
+
+.nav-pills .nav-link:hover { 
+  background-color: rgba(255, 255, 255, 0.05); 
+  color: white !important; 
+}
+
+.nav-pills .nav-link.active { 
+  background-color: #1f2937 !important; 
+  color: white !important; 
+  position: relative; 
+}
+
+.nav-pills .nav-link.active::before { 
+  content: ''; 
+  position: absolute; 
+  left: -16px; top: 10%; 
+  height: 80%; width: 4px; 
+  background-color: #3b82f6; 
+  border-radius: 0 4px 4px 0; 
+}
+
+.bg-blue-light { 
+  background-color: #eff6ff; 
+}
+
+.bg-secondary-subtle { 
+  background-color: #f3f4f6 !important; 
+}
 
 .drive-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
-.transition-all { transition: all 0.3s ease; }
+
+.transition-all { 
+  transition: all 0.3s ease; 
+}
 </style>

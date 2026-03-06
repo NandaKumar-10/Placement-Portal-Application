@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid p-0 d-flex bg-light min-vh-100 font-sans">
-    
     <div class="sidebar d-flex flex-column p-3 text-white">
       <div class="d-flex align-items-center mb-5 mt-2 px-2">
         <i class="bi bi-mortarboard-fill fs-3 me-2"></i>
@@ -9,7 +8,7 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <a href="#" class="nav-link active d-flex align-items-center">
+          <a href="/admin" class="nav-link active d-flex align-items-center">
             <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
           </a>
         </li>
@@ -21,11 +20,6 @@
         <li>
           <a href="/admin/students" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-people me-3 fs-5"></i> Students
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link text-white d-flex align-items-center">
-            <i class="bi bi-gear me-3 fs-5"></i> Settings
           </a>
         </li>
       </ul>

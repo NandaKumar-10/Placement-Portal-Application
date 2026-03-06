@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint, current_app
 import datetime
 from model import *
 from .auth import token_required,company_required
+from Cache import cache
 
 company_route = Blueprint("company_route",__name__)
 
@@ -84,7 +85,9 @@ def view_applications(current_user, drive_id):
             "branch": student.branch,
             "cgpa": student.cgpa,
             "resume_url": student.resume_url,
-            "status": app.status
+            "status": app.status,
+            "interview_date": app.interview_date,
+            "interview_link": app.interview_link
         })
 
     return jsonify(results), 200
@@ -95,6 +98,9 @@ def view_applications(current_user, drive_id):
 def update_application(current_user, app_id):
     data = request.get_json()
     new_status = data.get('status')
+
+    interview_date = data.get('interview_date')
+    interview_link = data.get('interview_link')
 
     if not new_status:
         return jsonify({'error': 'Missing status field'}), 400
@@ -109,7 +115,13 @@ def update_application(current_user, app_id):
     if drive.company_id != company.company_id:
         return jsonify({'error': 'Unauthorized to edit this application'}), 403
 
-    application.status = new_status
+    if new_status:
+        application.status = new_status
+    if interview_date:
+        application.interview_date = interview_date
+    if interview_link is not None:
+        application.interview_link = interview_link   
     db.session.commit()
+    cache.clear()
 
     return jsonify({'message': f'Student application marked as {new_status}'}), 200

@@ -13,11 +13,11 @@
             <i class="bi bi-speedometer2 me-3 fs-5"></i> Dashboard
           </router-link>
         </li>
-        <li>
-          <a href="#" class="nav-link text-white d-flex align-items-center opacity-75">
+        <!-- <li>
+          <a href="/company/applicant" class="nav-link text-white d-flex align-items-center opacity-75">
             <i class="bi bi-people me-3 fs-5"></i> Applicants
           </a>
-        </li>
+        </li> -->
       </ul>
 
       <div class="mt-auto px-2 mb-2">
@@ -157,7 +157,8 @@
                   </td>
                   <td class="py-3 border-light text-center fw-bold text-primary">{{ drive.applicants }}</td>
                   <td class="py-3 border-light text-end">
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">View Apps</button>
+                    <button @click="router.push(`/company/drive/${drive.drive_id}/applicants`)"
+                    class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">View Applications</button>
                   </td>
                 </tr>
               </tbody>
@@ -215,7 +216,6 @@ const fetchDashboard = async () => {
   }
 };
 
-// Create a new drive
 const submitNewDrive = async () => {
   submitting.value = true;
   try {
@@ -223,11 +223,9 @@ const submitNewDrive = async () => {
     
     alert("Drive posted successfully! Waiting for admin approval.");
     
-    // Reset form and hide it
     newDrive.value = { job_title: '', eligibility_cgpa: '', deadline: '' };
     showCreateForm.value = false;
     
-    // Refresh table
     await fetchDashboard();
   } catch (error) {
     console.error(error);
@@ -254,16 +252,59 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-.sidebar { width: 260px; background-color: #111827; }
-.tracking-wide { letter-spacing: 0.5px; }
+.font-sans { 
+  font-family: 'Inter', 
+  -apple-system, sans-serif; 
+}
 
-.nav-pills .nav-link { border-radius: 8px; padding: 12px 16px; margin-bottom: 4px; color: #9ca3af !important; transition: all 0.2s ease; }
-.nav-pills .nav-link:hover { background-color: rgba(255, 255, 255, 0.05); color: white !important; }
-.nav-pills .nav-link.active { background-color: #1f2937 !important; color: white !important; position: relative; }
-.nav-pills .nav-link.active::before { content: ''; position: absolute; left: -16px; top: 10%; height: 80%; width: 4px; background-color: #3b82f6; border-radius: 0 4px 4px 0; }
+.sidebar { 
+  width: 260px; 
+  background-color: #111827; 
+}
 
-.bg-blue-light { background-color: #eff6ff; }
-.bg-success-subtle { background-color: #dcfce7 !important; }
-.bg-warning-subtle { background-color: #fef3c7 !important; color: #d97706 !important; }
+.tracking-wide { 
+  letter-spacing: 0.5px; 
+}
+
+.nav-pills .nav-link { 
+  border-radius: 8px; 
+  padding: 12px 16px; 
+  margin-bottom: 4px; 
+  color: #9ca3af !important; 
+  transition: all 0.2s ease; 
+}
+
+.nav-pills .nav-link:hover { 
+  background-color: rgba(255, 255, 255, 0.05); 
+  color: white !important; 
+}
+
+.nav-pills .nav-link.active { 
+  background-color: #1f2937 !important; 
+  color: white !important; 
+  position: relative; 
+}
+
+.nav-pills .nav-link.active::before { 
+  content: ''; 
+  position: absolute; 
+  left: -16px; top: 10%; 
+  height: 80%; width: 4px; 
+  background-color: #3b82f6; 
+  border-radius: 0 4px 4px 0; 
+}
+
+.bg-blue-light { 
+  background-color: #eff6ff;
+}
+
+.bg-success-subtle { 
+  background-color: #dcfce7 !important; 
+}
+
+.bg-warning-subtle { 
+  background-color: #fef3c7 !important; 
+  color: #d97706 !important; 
+  }
+
 </style>

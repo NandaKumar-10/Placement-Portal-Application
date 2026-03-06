@@ -9,7 +9,7 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <router-link to="/student" class="nav-link active d-flex align-items-center">
+          <router-link to="/student/dashboard" class="nav-link active d-flex align-items-center">
             <i class="bi bi-house-door me-3 fs-5"></i> My Profile
           </router-link>
         </li>
@@ -92,6 +92,7 @@
                 <th class="fw-semibold pb-3 border-0">Role</th>
                 <th class="fw-semibold pb-3 border-0">Applied Date</th>
                 <th class="fw-semibold pb-3 border-0">Status</th>
+                <th class="fw-semibold pb-3 border-0">Interview Details</th>
               </tr>
             </thead>
             <tbody v-if="applications.length > 0">
@@ -104,11 +105,25 @@
                         :class="{
                           'bg-success-subtle text-success': app.status === 'Shortlisted' || app.status === 'Hired',
                           'bg-danger-subtle text-danger': app.status === 'Rejected',
-                          'bg-warning-subtle text-warning': app.status === 'Pending'
+                          'bg-warning-subtle text-warning': app.status === 'Pending',
+                          'bg-warning-subtle text-warning': app.status === 'Interview Scheduled' 
                         }">
                     {{ app.status }}
                   </span>
                 </td>
+                
+                <td class="py-3 border-light">
+                  <div v-if="app.status === 'Interview Scheduled' && app.interview_date">
+                    <div class="small fw-semibold text-dark mb-1">
+                      <i class="bi bi-calendar-event text-primary"></i> {{ app.interview_date }}
+                    </div>
+                    <a v-if="app.interview_link" :href="app.interview_link" target="_blank" class="small text-decoration-none fw-medium">
+                      <i class="bi bi-link-45deg"></i> Join Interview
+                    </a>
+                  </div>
+                  <span v-else class="text-muted small">-</span>
+                </td>
+
               </tr>
             </tbody>
             <tbody v-else>

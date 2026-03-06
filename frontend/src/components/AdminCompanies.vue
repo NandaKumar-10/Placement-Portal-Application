@@ -8,13 +8,13 @@
       </div>
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
-        <li>
-          <router-link to="/admin" class="nav-link text-white d-flex align-items-center text-decoration-none">
-            <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
-          </router-link>
-        </li>
         <li class="nav-item">
-          <a href="/admin/companies" class="nav-link active d-flex align-items-center">
+          <a href="/admin" class="nav-link d-flex align-items-center">
+            <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/companies" class="nav-link active text-white d-flex align-items-center">
             <i class="bi bi-building me-3 fs-5"></i> Companies
           </a>
         </li>

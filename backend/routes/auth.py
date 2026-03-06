@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint, current_app
-from werkzeug.security import generate_password_hash, check_password_hash
+from Cache import cache
 import jwt
 import datetime
 from functools import wraps
@@ -112,6 +112,7 @@ def signup():
         new_student = Students(user_id=new_user.user_id,branch=student_branch,cgpa=student_cgpa,
                                year=student_year,resume_url=student_resume)
         db.session.add(new_student)
+        cache.clear()
     else:
         new_user = Users(name = name, email = email, password = password, role = role)
         db.session.add(new_user)

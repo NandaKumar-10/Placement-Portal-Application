@@ -7,7 +7,6 @@ import {RouterView} from 'vue-router'
 <template>
   <div>
     <RouterView/>
-    <!-- <p>Hello from vue {{ name }}</p> -->
   </div>
 </template>
 

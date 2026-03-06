@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid p-0 d-flex bg-light min-vh-100 font-sans">
-
     <div class="sidebar d-flex flex-column p-3 text-white">
       <div class="d-flex align-items-center mb-5 mt-2 px-2">
         <i class="bi bi-mortarboard-fill fs-3 me-2"></i>
@@ -8,18 +7,18 @@
       </div>
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
-        <li>
-          <router-link to="/admin" class="nav-link text-white d-flex align-items-center text-decoration-none">
-            <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/admin/companies" class="nav-link text-white d-flex align-items-center text-decoration-none">
-            <i class="bi bi-building me-3 fs-5"></i> Companies
-          </router-link>
-        </li>
         <li class="nav-item">
-          <a href="#" class="nav-link active d-flex align-items-center">
+          <a href="/admin" class="nav-link d-flex align-items-center">
+            <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/companies" class="nav-link text-white d-flex align-items-center">
+            <i class="bi bi-building me-3 fs-5"></i> Companies
+          </a>
+        </li>
+        <li>
+          <a href="/admin/students" class="nav-link active text-white d-flex align-items-center">
             <i class="bi bi-people me-3 fs-5"></i> Students
           </a>
         </li>

@@ -94,7 +94,9 @@ class Application(db.Model):
     drive_id: Mapped[int] = mapped_column(ForeignKey("Placement_drives.drive_id"))
     application_date: Mapped[Date] = mapped_column(Date)
     status: Mapped[str] = mapped_column(String(200))
-
+    interview_date: Mapped[str] = mapped_column(String(100), nullable=True)
+    interview_link: Mapped[str] = mapped_column(String(300), nullable=True)
+    
     student = relationship("Students", back_populates = "applications")
     drive = relationship("PlacementDrive", back_populates = "applications")
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from model import *
 from .auth import token_required,admin_required
-import datetime
+from Cache import cache
 
 admin_routes = Blueprint("admin_route", __name__)
 
@@ -230,6 +230,7 @@ def blacklist_user():
 @admin_routes.route('/admin/statistics', methods=['GET'])
 @token_required
 @admin_required
+@cache.cached(timeout = 600, query_string = True)
 def get_placement_statistics():
     total_students = db.session.query(func.count(Students.student_id)).scalar()
     total_companies = db.session.query(func.count(Company.company_id)).scalar()
@@ -296,6 +297,8 @@ def manage_drive(drive_id):
         
         drive.status = new_status
         db.session.commit()
+
+        cache.clear()
         
         return jsonify({'message': f'Drive status successfully updated to {new_status}'}), 200
 
@@ -324,7 +327,6 @@ def manage_drive(drive_id):
                 "resume_url": student.resume_url
             })
 
-        # 3. Return it all together
         return jsonify({
             "drive_details": {
                 "job_title": drive_data.job_title,
