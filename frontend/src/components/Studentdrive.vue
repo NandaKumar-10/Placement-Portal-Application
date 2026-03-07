@@ -146,11 +146,16 @@ const applyForDrive = async (driveId) => {
   try {
     const res = await api.post('/student/apply', { drive_id: driveId });
     alert(res.data.message || "Successfully applied!");
-    
-  } catch (error) {
+    const driveToUpdate = drives.value.find(d => d.drive_id === driveId);
+    if (driveToUpdate) {
+      driveToUpdate.has_applied = true; 
+    }    
+  } 
+  catch (error) {
     console.error(error);
     alert(error.response?.data?.error || "Failed to apply.");
-  } finally {
+  }
+  finally {
     applying.value = null;
   }
 };

@@ -70,7 +70,6 @@ def student_register():
 @student_route.route('/student/drive', methods=['GET'])
 @token_required
 @student_requried
-@cache.cached(timeout=600, query_string=True)
 def get_drives(current_user):
     student = Students.query.filter_by(user_id=current_user.user_id).first()
     
@@ -117,11 +116,13 @@ def apply_for_drive(current_user):
     if existing_app:
         return jsonify({'error': 'You have already applied for this drive'}), 400
 
-    # student = db.session.get(Students, student_id)
     drive = db.session.get(PlacementDrive, drive_id)
 
     if student.cgpa < drive.eligibility_cgpa:
         return jsonify({'error': 'You do not meet the CGPA criteria'}), 400
+
+    if student.year != drive.eligibility_year:
+        return jsonify({'error': 'You cannot apply for this drive - Eligibility Year'}), 400
 
     new_app = Application(
         student_id=student.student_id,
@@ -204,17 +205,30 @@ def get_my_history(current_user):
     apps = db.session.query(Application, PlacementDrive, Company)\
         .join(PlacementDrive, Application.drive_id == PlacementDrive.drive_id)\
         .join(Company, PlacementDrive.company_id == Company.company_id)\
-        .filter(Application.student_id == student.student_id).all()
+        .filter(Application.student_id == student.student_id)\
+        .order_by(Application.application_date.desc()).all()
 
     history = []
     for app, drive, company in apps:
-        if app.status in ["Accepted", "Hired", "Rejected", "Applied"]:
-            history.append({
-                "application_id": app.application_id,
-                "company": company.company_name,
-                "role": drive.job_title,
-                "applied_on": str(app.application_date),
-                "status": app.status
-            })
+        history.append({
+            "application_id": app.application_id,
+            "company": company.company_name,
+            "role": drive.job_title,
+            "applied_on": str(app.application_date),
+            "status": app.status
+        })
 
     return jsonify({"history": history}), 200
+
+@student_route.route('/student/export-history', methods=['POST'])
+@token_required
+@student_requried
+def trigger_export(current_user):
+    from tasks import export_student_history_csv
+    student = Students.query.filter_by(user_id=current_user.user_id).first()
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
+
+    export_student_history_csv.delay(student.student_id, current_user.email, current_user.name)
+
+    return jsonify({"message": "Export started! You will receive an email with the CSV attachment shortly."}), 202

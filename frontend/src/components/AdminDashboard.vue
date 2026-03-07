@@ -8,19 +8,19 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <a href="/admin" class="nav-link active d-flex align-items-center">
+          <router-link to="/admin" class="nav-link active d-flex align-items-center">
             <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/companies" class="nav-link text-white d-flex align-items-center">
+          <router-link to="/admin/companies" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-building me-3 fs-5"></i> Companies
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/students" class="nav-link text-white d-flex align-items-center">
+          <router-link to="/admin/students" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-people me-3 fs-5"></i> Students
-          </a>
+          </router-link>
         </li>
       </ul>
 
@@ -37,19 +37,19 @@
         <h2 class="fw-bold mb-0 text-dark">Admin Dashboard</h2>
         
         <div class="d-flex align-items-center gap-4">
-          <button class="btn btn-outline-primary border-0 bg-white shadow-sm rounded-circle p-2 position-relative">
+          <!-- <button class="btn btn-outline-primary border-0 bg-white shadow-sm rounded-circle p-2 position-relative">
             <i class="bi bi-bell text-primary"></i>
             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-          </button>
+          </button> -->
           
           <div class="d-flex align-items-center gap-3">
             <div class="text-end d-none d-md-block">
-              <div class="fw-bold text-dark lh-1">Admin User</div>
+              <div class="fw-bold text-dark lh-1">Admin - Placement</div>
               <small class="text-muted" style="font-size: 0.8rem;">Administrator</small>
             </div>
-            <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white" style="width: 40px; height: 40px;">
+            <!-- <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white" style="width: 40px; height: 40px;">
               <i class="bi bi-person-fill fs-5"></i>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@
                 <h1 class="fw-bold mb-0 text-dark">{{ stats.overview.total_companies }}</h1>
               </div>
               <div class="icon-box bg-blue-light text-primary rounded-3 d-flex justify-content-center align-items-center">
-                <i class="bi bi-building fs-4"></i>
+                <img src="@/assets/company.png" alt="company" class="img-fluid rounded-3">
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@
                 <h1 class="fw-bold mb-0 text-dark">{{ stats.overview.total_students }}</h1>
               </div>
               <div class="icon-box bg-blue-light text-primary rounded-3 d-flex justify-content-center align-items-center">
-                <i class="bi bi-people-fill fs-4"></i>
+                <img src="@/assets/images-student.png" alt="student" class="img-fluid rounded-3">
               </div>
             </div>
           </div>
@@ -91,7 +91,8 @@
                 <h1 class="fw-bold mb-0 text-dark">{{ stats.placement_performance?.placed_students || 0 }}</h1>
               </div>
               <div class="icon-box bg-green-light text-success rounded-3 d-flex justify-content-center align-items-center">
-                <i class="bi bi-check-circle-fill fs-4"></i>
+                <!-- <i class="bi bi-check-circle-fill fs-4"></i> -->
+                 <img src="@/assets/images-student.png" alt="student" class="img-fluid rounded-3">
               </div>
             </div>
           </div>
@@ -219,9 +220,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-    .font-sans {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
+   .font-sans { 
+   font-family: 'Inter', 
+   -apple-system, sans-serif; 
+   }
 
     .sidebar {
     width: 260px;

@@ -68,7 +68,7 @@
               </div>
               <div class="col-md-6 px-1">
                 <label class="form-label small fw-semibold">Resume URL (Google Drive / Dropbox)</label>
-                <input type="text" class="form-control form-control-sm" v-model="studentData.resume" placeholder="https://..." required>
+                <input type="url" class="form-control form-control-sm" v-model="studentData.resume" placeholder="https://..." required>
               </div>
             </div>
 

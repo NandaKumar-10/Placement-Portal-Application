@@ -61,7 +61,7 @@
                 </td>
                 <td class="py-3 border-light text-end">
                   
-                  <div v-if="app.status === 'Pending'" class="btn-group btn-group-sm">
+                  <div v-if="app.status === 'Applied'" class="btn-group btn-group-sm">
                     <button @click="updateStatus(app.application_id, 'Shortlisted')" class="btn btn-outline-primary fw-medium">Shortlist</button>
                     <button @click="updateStatus(app.application_id, 'Rejected')" class="btn btn-outline-danger fw-medium">Reject</button>
                   </div>
@@ -106,7 +106,7 @@
           </div>
           <div class="mb-4">
             <label class="form-label small fw-semibold">Interview Link / Location (Optional)</label>
-            <input type="text" class="form-control" placeholder="e.g. Google Meet link or Room 204" v-model="interviewForm.link">
+            <input type="url" class="form-control" placeholder="e.g. Google Meet link or Room 204" v-model="interviewForm.link">
           </div>
           <div class="d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-light fw-medium" @click="closeModal">Cancel</button>

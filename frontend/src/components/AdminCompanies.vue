@@ -9,19 +9,19 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <a href="/admin" class="nav-link d-flex align-items-center">
+          <router-link to="/admin" class="nav-link d-flex align-items-center">
             <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/companies" class="nav-link active text-white d-flex align-items-center">
+          <router-link to="/admin/companies" class="nav-link active text-white d-flex align-items-center">
             <i class="bi bi-building me-3 fs-5"></i> Companies
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/students" class="nav-link text-white d-flex align-items-center">
+          <router-link to="/admin/students" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-people me-3 fs-5"></i> Students
-          </a>
+          </router-link>
         </li>
       </ul>
 
@@ -53,7 +53,7 @@
           
           <div class="input-group" style="max-width: 300px;">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" class="form-control border-start-0 ps-0" placeholder="Search companies...">
+            <input type="text" v-model="searchQuery" class="form-control border-start-0 ps-0" placeholder="Search companies...">
           </div>
         </div>
 
@@ -73,8 +73,8 @@
                 <th class="fw-semibold pb-3 border-0 text-end">Actions</th>
               </tr>
             </thead>
-            <tbody v-if="companies.length > 0">
-              <tr v-for="company in companies" :key="company.company_id">
+            <tbody v-if="filteredCompanies.length > 0">
+              <tr v-for="company in filteredCompanies" :key="company.company_id">
                 <td class="py-3 border-light fw-bold text-dark">
                   <div class="d-flex align-items-center">
                     <div class="bg-blue-light text-primary rounded d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
@@ -106,18 +106,21 @@
                   <button v-if="company.approval_status === 'Approved'" 
                           @click="updateStatus(company.company_id, false)" 
                           class="btn btn-sm btn-warning me-2 rounded-3 text-white" title="Revoke Approval">
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-x-lg">Revoke Approval</i>
                   </button>
 
                   <button @click="deleteCompany(company.company_id)" class="btn btn-sm btn-outline-danger rounded-3" title="Delete">
-                    <i class="bi bi-trash3"></i>
+                    <i class="bi bi-trash3">Delete</i>
                   </button>
                 </td>
               </tr>
             </tbody>
             <tbody v-else>
               <tr>
-                <td colspan="5" class="text-center py-5 text-muted">No companies registered yet.</td>
+                <td colspan="5" class="text-center py-5 text-muted">
+                  <span v-if="searchQuery">No companies found matching "{{ searchQuery }}".</span>
+                  <span v-else>No companies registered yet.</span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -129,15 +132,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '../api'; 
 
 const router = useRouter();
 const companies = ref([]);
 const loading = ref(true);
+const searchQuery = ref('');
 
-// 1. Fetch all companies
 const fetchCompanies = async () => {
   loading.value = true;
   try {
@@ -151,14 +154,26 @@ const fetchCompanies = async () => {
   }
 };
 
-// 2. Approve or Reject a company
+const filteredCompanies = computed(() => {
+  if (!searchQuery.value) {
+    return companies.value;
+  }
+  
+  const query = searchQuery.value.toLowerCase();
+  
+  return companies.value.filter(company => {
+    return company.company_name.toLowerCase().includes(query) || 
+           (company.hr_contact && company.hr_contact.toLowerCase().includes(query));
+  });
+});
+
 const updateStatus = async (companyId, newStatus) => {
   try {
     await api.put('/admin/company-reg', {
       company_id: companyId,
-      approval_status: newStatus // Backend expects boolean or matching string based on your model
+      approval_status: newStatus
     });
-    // Refresh the list to show new status
+
     await fetchCompanies();
   } catch (error) {
     console.error("Error updating status:", error);
@@ -166,15 +181,14 @@ const updateStatus = async (companyId, newStatus) => {
   }
 };
 
-// 3. Delete a company
 const deleteCompany = async (companyId) => {
   if (!confirm("Are you sure you want to delete this company? This action cannot be undone.")) return;
   
   try {
     await api.delete(`/admin/company/${companyId}`);
-    // Remove it from the local array so the UI updates instantly without a full reload
     companies.value = companies.value.filter(c => c.company_id !== companyId);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Error deleting company:", error);
     alert("Failed to delete company.");
   }
@@ -193,36 +207,67 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.font-sans { 
+  font-family: 'Inter', 
+  -apple-system, sans-serif; 
+}
 
-    .font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-    .sidebar { width: 260px; background-color: #111827; }
-    .tracking-wide { letter-spacing: 0.5px; }
+.sidebar { 
+  width: 260px; 
+  background-color: #111827; 
+}
 
-    .nav-pills .nav-link {
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 4px;
-        color: #9ca3af !important; 
-        transition: all 0.2s ease;
-    }
-    .nav-pills .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: white !important;
-    }
-    .nav-pills .nav-link.active {
-        background-color: #1f2937 !important; 
-        color: white !important;
-        position: relative;
-    }
-    .nav-pills .nav-link.active::before {
-        content: ''; position: absolute; left: -16px; top: 10%; height: 80%; width: 4px;
-        background-color: #3b82f6; border-radius: 0 4px 4px 0;
-    }
+.tracking-wide { 
+  letter-spacing: 0.5px; 
+}
 
-    .bg-blue-light { background-color: #eff6ff; }
-    .table th { text-transform: capitalize; font-size: 0.9rem; }
-    .table td { font-size: 0.95rem; }
+.nav-pills .nav-link {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 4px;
+  color: #9ca3af !important; 
+  transition: all 0.2s ease;
+}
+    
+.nav-pills .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white !important;
+}
+    
+.nav-pills .nav-link.active {
+  background-color: #1f2937 !important; 
+  color: white !important;
+  position: relative;
+}
 
-    .bg-success-subtle { background-color: #dcfce7 !important; }
-    .bg-warning-subtle { background-color: #fef3c7 !important; color: #d97706 !important; }
+.nav-pills .nav-link.active::before {
+  content: ''; 
+  position: absolute; 
+  left: -16px; top: 10%; 
+  height: 80%; width: 4px;
+  background-color: #3b82f6; 
+  border-radius: 0 4px 4px 0;
+}
+
+.bg-blue-light { 
+  background-color: #eff6ff; 
+}
+
+.table th { 
+  text-transform: capitalize; 
+  font-size: 0.9rem; 
+}
+
+.table td { 
+  font-size: 0.95rem; 
+}
+
+.bg-success-subtle { 
+  background-color: #dcfce7 !important; 
+}
+
+.bg-warning-subtle { 
+  background-color: #fef3c7 !important; 
+  color: #d97706 !important; 
+}
 </style>

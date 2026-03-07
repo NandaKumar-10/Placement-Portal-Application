@@ -64,6 +64,8 @@ def get_all_students():
     for student, user in students:
         result.append({
             "student_id": student.student_id,
+            "user_id": user.user_id,
+            "status": user.role,
             "name": user.name,
             "email": user.email,
             "branch": student.branch,

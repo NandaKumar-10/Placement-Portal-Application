@@ -32,6 +32,11 @@
     <div class="main-content flex-grow-1 p-4 px-md-5">
       <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
         <h2 class="fw-bold mb-0 text-dark">Application History</h2>
+        <button @click="triggerExport" :disabled="isExporting" class="btn btn-primary d-flex align-items-center gap-2">
+          <span v-if="isExporting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i v-else class="bi bi-cloud-download"></i>
+          {{ isExporting ? 'Starting Export...' : 'Export to CSV' }}
+        </button>
       </div>
 
       <div class="card border-0 shadow-sm rounded-4 p-4">
@@ -47,7 +52,7 @@
                   <th class="fw-semibold pb-3 border-0">Company</th>
                   <th class="fw-semibold pb-3 border-0">Role</th>
                   <th class="fw-semibold pb-3 border-0">Date</th>
-                  <th class="fw-semibold pb-3 border-0">Final Status</th>
+                  <th class="fw-semibold pb-3 border-0">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,9 +105,25 @@ const fetchHistory = async () => {
   }
 };
 
+const isExporting = ref(false);
+
+const triggerExport = async () => {
+  isExporting.value = true;
+  try {
+    const res = await api.post('/student/export-history');
+    alert(res.data.message);
+  } 
+  catch (error) {
+    console.error("Export failed:", error);
+  } 
+  finally {
+    isExporting.value = false;
+  }
+};
+
 const statusClass = (status) => {
   return {
-    'bg-success-subtle text-success': ['Hired', 'Accepted'].includes(status),
+    'bg-success-subtle text-success': ['Hired', 'Accepted','Interview Scheduled'].includes(status),
     'bg-danger-subtle text-danger': status === 'Rejected',
     'bg-warning-subtle text-warning': status === 'Shortlisted',
     'badge bg-dark': status === 'Applied'

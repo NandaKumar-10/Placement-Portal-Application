@@ -8,19 +8,19 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <a href="/admin" class="nav-link d-flex align-items-center">
+          <router-link to="/admin" class="nav-link d-flex align-items-center">
             <i class="bi bi-graph-up me-3 fs-5"></i> Dashboard
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/companies" class="nav-link text-white d-flex align-items-center">
+          <router-link to="/admin/companies" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-building me-3 fs-5"></i> Companies
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="/admin/students" class="nav-link active text-white d-flex align-items-center">
+          <router-link to="/admin/students" class="nav-link active text-white d-flex align-items-center">
             <i class="bi bi-people me-3 fs-5"></i> Students
-          </a>
+          </router-link>
         </li>
       </ul>
 
@@ -69,6 +69,7 @@
                 <th class="fw-semibold pb-3 border-0">Branch</th>
                 <th class="fw-semibold pb-3 border-0">CGPA</th>
                 <th class="fw-semibold pb-3 border-0">Resume</th>
+                <th class="fw-semibold pb-3 border-0">Status</th>
                 <th class="fw-semibold pb-3 border-0 text-end">Actions</th>
               </tr>
             </thead>
@@ -105,13 +106,28 @@
                   <span v-else class="text-muted small">Not uploaded</span>
                 </td>
                 
-                <td class="py-3 border-light text-end">
-                  <button @click="deleteStudent(student.student_id)" class="btn btn-sm btn-outline-danger rounded-3" title="Delete Student">
-                    <i class="bi bi-trash3"></i>
-                  </button>
-                </td>
-                
-              </tr>
+                <td class="py-3 border-light">
+                  <span class="badge rounded-pill fw-medium" 
+                  :class="student.status === 'Blacklisted' ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'">
+                  {{ student.status === 'Blacklisted' ? 'Blacklisted' : 'Active' }}
+                </span>
+              </td>
+              
+              <td class="py-3 border-light text-end">
+                <button @click="toggleBlacklist(student)" 
+                class="btn btn-sm me-2 rounded-3" 
+                :class="student.status === 'Blacklisted' ? 'btn-success' : 'btn-warning text-dark'" 
+                :title="student.status === 'Blacklisted' ? 'Unblock Student' : 'Blacklist Student'">
+                <i v-if="student.status === 'Student'" class="bi" :class="student.status === 'Blacklisted' ? 'bi-unlock-fill' : 'bi-ban'">Blacklist</i>
+                <i v-if="student.status === 'Blacklisted'" class="bi" :class="student.status === 'Blacklisted' ? 'bi-unlock-fill' : 'bi-ban'">Activate</i>
+              </button>
+              
+              <button @click="deleteStudent(student.student_id)" class="btn btn-sm btn-outline-danger rounded-3" title="Delete Student">
+                <i class="bi bi-trash3">Delete</i>
+              </button>
+            </td>
+          </tr>
+
             </tbody>
             <tbody v-else>
               <tr>
@@ -167,6 +183,29 @@ const deleteStudent = async (studentId) => {
   } catch (error) {
     console.error("Error deleting student:", error);
     alert("Failed to delete student.");
+  }
+};
+
+const toggleBlacklist = async (student) => {
+  const action = student.status === 'Blacklisted' ? 'unblock' : 'block';
+  
+  const confirmMsg = action === 'block' 
+    ? `Are you sure you want to blacklist ${student.name}? They will no longer be able to log in.`
+    : `Are you sure you want to unblock ${student.name}?`;
+    
+  if (!confirm(confirmMsg)) return;
+  
+  try {
+    await api.post('/admin/blacklist', { 
+      user_id: student.user_id, 
+      action: action 
+    });
+    
+    student.status = action === 'block' ? 'Blacklisted' : 'Student';
+    
+  } catch (error) {
+    console.error("Error updating student status:", error);
+    alert("Failed to update student status.");
   }
 };
 

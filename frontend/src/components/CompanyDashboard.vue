@@ -37,9 +37,9 @@
             <div class="fw-bold text-dark lh-1">{{ companyDetails.name || 'Loading...' }}</div>
             <small class="text-muted" style="font-size: 0.8rem;">Employer Panel</small>
           </div>
-          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+          <!-- <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
             <i class="bi bi-building fs-5"></i>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -69,9 +69,9 @@
                   <h6 class="text-muted fw-semibold mb-2">Total Drives Created</h6>
                   <h1 class="fw-bold mb-0 text-dark">{{ drives.length }}</h1>
                 </div>
-                <div class="bg-blue-light text-primary rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                <!-- <div class="bg-blue-light text-primary rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
                   <i class="bi bi-briefcase fs-4"></i>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -83,8 +83,9 @@
                   <h6 class="text-muted fw-semibold mb-2">Total Applicants</h6>
                   <h1 class="fw-bold mb-0 text-dark">{{ totalApplicants }}</h1>
                 </div>
-                <div class="bg-success-subtle text-success rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
-                  <i class="bi bi-people-fill fs-4"></i>
+                <div class="bg-subtle text-success rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                  <!-- <i class="bi bi-people-fill fs-4"></i> -->
+                   <img src="@/assets/images-student.png" alt="company" class="img-fluid rounded-3">
                 </div>
               </div>
             </div>
