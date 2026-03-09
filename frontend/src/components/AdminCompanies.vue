@@ -38,11 +38,8 @@
         <h2 class="fw-bold mb-0 text-dark">Manage Companies</h2>
         <div class="d-flex align-items-center gap-3">
           <div class="text-end d-none d-md-block">
-            <div class="fw-bold text-dark lh-1">Admin User</div>
+            <div class="fw-bold text-dark lh-1">Placement - Admin</div>
             <small class="text-muted" style="font-size: 0.8rem;">Administrator</small>
-          </div>
-          <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white" style="width: 40px; height: 40px;">
-            <i class="bi bi-person-fill fs-5"></i>
           </div>
         </div>
       </div>
@@ -183,7 +180,6 @@ const updateStatus = async (companyId, newStatus) => {
 
 const deleteCompany = async (companyId) => {
   if (!confirm("Are you sure you want to delete this company? This action cannot be undone.")) return;
-  
   try {
     await api.delete(`/admin/company/${companyId}`);
     companies.value = companies.value.filter(c => c.company_id !== companyId);
@@ -208,8 +204,7 @@ onMounted(() => {
 
 <style scoped>
 .font-sans { 
-  font-family: 'Inter', 
-  -apple-system, sans-serif; 
+  font-family: sans-serif; 
 }
 
 .sidebar { 

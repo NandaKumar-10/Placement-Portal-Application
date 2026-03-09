@@ -38,18 +38,12 @@
         <h2 class="fw-bold mb-0 text-dark">Student Dashboard</h2>
         
         <div class="d-flex align-items-center gap-4">
-          <!-- <button class="btn btn-outline-primary border-0 bg-white shadow-sm rounded-circle p-2 position-relative">
-            <i class="bi bi-bell text-primary"></i>
-          </button> -->
           
           <div class="d-flex align-items-center gap-3">
             <div class="text-end d-none d-md-block">
               <div class="fw-bold text-dark lh-1">{{ profile.name || 'Loading...' }}</div>
               <small class="text-muted" style="font-size: 0.8rem;">Student</small>
             </div>
-            <!-- <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white" style="width: 40px; height: 40px;">
-              <i class="bi bi-person-fill fs-5"></i>
-            </div> -->
           </div>
         </div>
       </div>
@@ -57,9 +51,6 @@
       <div class="card border-0 shadow-sm rounded-4 mb-4 p-2">
         <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div class="d-flex align-items-center gap-4">
-            <!-- <div class="bg-light rounded-circle d-flex justify-content-center align-items-center text-secondary" style="width: 80px; height: 80px;">
-              <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
-            </div> -->
             <div>
               <h4 class="fw-bold text-dark mb-1">{{ profile.name }}</h4>
               <p class="text-muted mb-2">
@@ -181,8 +172,7 @@ onMounted(() => {
 <style scoped>
 
 .font-sans { 
-  font-family: 'Inter', 
-  -apple-system, sans-serif; 
+  font-family: sans-serif; 
 }
 
 .sidebar { 

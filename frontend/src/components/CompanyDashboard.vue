@@ -13,11 +13,6 @@
             <i class="bi bi-speedometer2 me-3 fs-5"></i> Dashboard
           </router-link>
         </li>
-        <!-- <li>
-          <a href="/company/applicant" class="nav-link text-white d-flex align-items-center opacity-75">
-            <i class="bi bi-people me-3 fs-5"></i> Applicants
-          </a>
-        </li> -->
       </ul>
 
       <div class="mt-auto px-2 mb-2">
@@ -37,9 +32,6 @@
             <div class="fw-bold text-dark lh-1">{{ companyDetails.name || 'Loading...' }}</div>
             <small class="text-muted" style="font-size: 0.8rem;">Employer Panel</small>
           </div>
-          <!-- <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
-            <i class="bi bi-building fs-5"></i>
-          </div> -->
         </div>
       </div>
 
@@ -69,9 +61,6 @@
                   <h6 class="text-muted fw-semibold mb-2">Total Drives Created</h6>
                   <h1 class="fw-bold mb-0 text-dark">{{ drives.length }}</h1>
                 </div>
-                <!-- <div class="bg-blue-light text-primary rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
-                  <i class="bi bi-briefcase fs-4"></i>
-                </div> -->
               </div>
             </div>
           </div>
@@ -84,7 +73,6 @@
                   <h1 class="fw-bold mb-0 text-dark">{{ totalApplicants }}</h1>
                 </div>
                 <div class="bg-subtle text-success rounded-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
-                  <!-- <i class="bi bi-people-fill fs-4"></i> -->
                    <img src="@/assets/images-student.png" alt="company" class="img-fluid rounded-3">
                 </div>
               </div>
@@ -190,7 +178,6 @@ const showCreateForm = ref(false);
 const companyDetails = ref({});
 const drives = ref([]);
 
-// Form model
 const newDrive = ref({
   job_title: '',
   eligibility_branch: '',
@@ -228,10 +215,12 @@ const submitNewDrive = async () => {
     showCreateForm.value = false;
     
     await fetchDashboard();
-  } catch (error) {
+  } 
+  catch (error) {
     console.error(error);
     alert(error.response?.data?.error || "Failed to create drive.");
-  } finally {
+  } 
+  finally {
     submitting.value = false;
   }
 };
@@ -254,8 +243,7 @@ onMounted(() => {
 
 <style scoped>
 .font-sans { 
-  font-family: 'Inter', 
-  -apple-system, sans-serif; 
+  font-family: sans-serif; 
 }
 
 .sidebar { 
@@ -306,6 +294,5 @@ onMounted(() => {
 .bg-warning-subtle { 
   background-color: #fef3c7 !important; 
   color: #d97706 !important; 
-  }
-
+}
 </style>

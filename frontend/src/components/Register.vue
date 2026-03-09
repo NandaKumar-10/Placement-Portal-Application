@@ -165,23 +165,40 @@ const handleRegister = async () => {
       router.push('/');
     }, 1500);
 
-  } catch (error) {
+  } 
+  catch (error) {
     console.error(error);
     if (error.response && error.response.data && error.response.data.message) {
       errorMessage.value = error.response.data.message;
     } else {
       errorMessage.value = "Registration failed. Please try again.";
     }
-  } finally {
+  } 
+  finally {
     loading.value = false;
   }
 };
 </script>
 
 <style scoped>
-    .font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-    .bg-primary { background-color: #2563EB !important; }
-    .text-primary { color: #2563EB !important; }
-    .btn-primary { background-color: #2563EB; border-color: #2563EB; }
-    .btn-primary:hover { background-color: #1d4ed8; }
+.font-sans { 
+  font-family: sans-serif; 
+}
+
+.bg-primary { 
+  background-color: #2563EB !important; 
+}
+
+.text-primary { 
+  color: #2563EB !important; 
+}
+
+.btn-primary { 
+  background-color: #2563EB; 
+  border-color: #2563EB; 
+}
+
+.btn-primary:hover { 
+  background-color: #1d4ed8; 
+}
 </style>

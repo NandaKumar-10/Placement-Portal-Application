@@ -178,8 +178,7 @@ onMounted(() => {
 
 <style scoped>
 .font-sans { 
-  font-family: 'Inter', 
-  -apple-system, sans-serif; 
+  font-family: sans-serif; 
 }
 
 .sidebar { 

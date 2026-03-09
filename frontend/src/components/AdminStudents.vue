@@ -37,11 +37,8 @@
         <h2 class="fw-bold mb-0 text-dark">Manage Students</h2>
         <div class="d-flex align-items-center gap-3">
           <div class="text-end d-none d-md-block">
-            <div class="fw-bold text-dark lh-1">Admin User</div>
+            <div class="fw-bold text-dark lh-1">Placement - Admin</div>
             <small class="text-muted" style="font-size: 0.8rem;">Administrator</small>
-          </div>
-          <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white" style="width: 40px; height: 40px;">
-            <i class="bi bi-person-fill fs-5"></i>
           </div>
         </div>
       </div>
@@ -222,9 +219,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.font-sans { font-family: 'Inter', -apple-system, sans-serif; }
-.sidebar { width: 260px; background-color: #111827; }
-.tracking-wide { letter-spacing: 0.5px; }
+.font-sans { 
+  font-family: sans-serif; 
+}
+.sidebar { 
+  width: 260px; 
+  background-color: #111827; 
+}
+
+.tracking-wide { 
+  letter-spacing: 0.5px; 
+}
 
 .nav-pills .nav-link {
   border-radius: 8px;
@@ -233,21 +238,33 @@ onMounted(() => {
   color: #9ca3af !important; 
   transition: all 0.2s ease;
 }
+
 .nav-pills .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.05);
   color: white !important;
 }
+
 .nav-pills .nav-link.active {
   background-color: #1f2937 !important; 
   color: white !important;
   position: relative;
 }
+
 .nav-pills .nav-link.active::before {
   content: ''; position: absolute; left: -16px; top: 10%; height: 80%; width: 4px;
   background-color: #3b82f6; border-radius: 0 4px 4px 0;
 }
 
-.bg-blue-light { background-color: #eff6ff; }
-.table th { text-transform: capitalize; font-size: 0.9rem; }
-.table td { font-size: 0.95rem; }
+.bg-blue-light { 
+  background-color: #eff6ff; 
+}
+
+.table th { 
+  text-transform: capitalize; 
+  font-size: 0.9rem; 
+}
+
+.table td { 
+  font-size: 0.95rem; 
+}
 </style>

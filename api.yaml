@@ -1,0 +1,425 @@
+openapi: 3.0.0
+info:
+  title: Placement Portal API
+  description: RESTful API documentation for the Student Placement Portal backend.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+        
+    RegisterRequest:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        password: { type: string }
+        role: { type: string, enum: [Student, Company] }
+        branch: { type: string }
+        cgpa: { type: number, format: float }
+        year: { type: integer }
+        resume: { type: string }
+        hrContact: { type: string }
+        website: { type: string }
+
+    PlacementDrive:
+      type: object
+      properties:
+        job_title: { type: string }
+        eligibility_branch: { type: string }
+        eligibility_cgpa: { type: number, format: float }
+        eligibility_year: { type: integer }
+        deadline: { type: string, format: date }
+
+security:
+  - bearerAuth: []
+
+paths:
+  /login:
+    post:
+      tags: [Auth]
+      summary: User login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+        '400':
+          description: Missing credentials
+
+  /register:
+    post:
+      tags: [Auth]
+      summary: Register a new User
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Missing data
+        '409':
+          description: User already exists
+
+  /admin/company-reg:
+    put:
+      tags: [Admin]
+      summary: Approve or reject company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_id: { type: integer }
+                approval_status: { type: boolean }
+      responses:
+        '200':
+          description: Company status updated
+
+  /admin/placement-drive:
+    put:
+      tags: [Admin]
+      summary: Approve or reject placement drive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                drive_id: { type: integer }
+                status: { type: string, enum: [Approved, Rejected, Pending] }
+      responses:
+        '200':
+          description: Drive status updated
+
+  /admin/students:
+    get:
+      tags: [Admin]
+      summary: Get all students
+      responses:
+        '200':
+          description: List of students
+
+  /admin/student/{student_id}:
+    delete:
+      tags: [Admin]
+      summary: Delete a student
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Student deleted
+
+  /admin/companies:
+    get:
+      tags: [Admin]
+      summary: Get all companies
+      responses:
+        '200':
+          description: List of companies
+
+  /admin/company/{company_id}:
+    delete:
+      tags: [Admin]
+      summary: Delete a company
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Company deleted
+
+  /admin/placement-drives:
+    get:
+      tags: [Admin]
+      summary: Get all placement drives
+      responses:
+        '200':
+          description: List of drives
+
+  /admin/placement-drive/{drive_id}:
+    delete:
+      tags: [Admin]
+      summary: Delete a placement drive
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Drive deleted
+
+  /admin/search:
+    get:
+      tags: [Admin]
+      summary: Search students and companies
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Search results
+
+  /admin/blacklist:
+    post:
+      tags: [Admin]
+      summary: Block or unblock a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: { type: integer }
+                action: { type: string, enum: [block, unblock] }
+      responses:
+        '200':
+          description: User blacklist status updated
+
+  /admin/statistics:
+    get:
+      tags: [Admin]
+      summary: Get system statistics
+      responses:
+        '200':
+          description: Statistical data
+
+  /admin/drive/{drive_id}:
+    get:
+      tags: [Admin]
+      summary: Get specific drive details and applicants
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Drive data
+    put:
+      tags: [Admin]
+      summary: Update drive status
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: { type: string }
+      responses:
+        '200':
+          description: Status updated
+
+  # ----------------------------------------
+  # COMPANY ROUTES
+  # ----------------------------------------
+  /company/dashboard:
+    get:
+      tags: [Company]
+      summary: Company dashboard data
+      responses:
+        '200':
+          description: Profile and drives
+
+  /company/drive:
+    post:
+      tags: [Company]
+      summary: Create a new placement drive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlacementDrive'
+      responses:
+        '201':
+          description: Drive created
+
+  /company/drive/{drive_id}/applications:
+    get:
+      tags: [Company]
+      summary: View applications for a specific drive
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: List of applications
+
+  /company/application/{app_id}:
+    put:
+      tags: [Company]
+      summary: Update student application status
+      parameters:
+        - name: app_id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: { type: string }
+                interview_date: { type: string, format: date }
+                interview_link: { type: string }
+      responses:
+        '200':
+          description: Application updated
+
+  /student/dashboard:
+    get:
+      tags: [Student]
+      summary: Student dashboard data
+      responses:
+        '200':
+          description: Profile and recent applications
+
+  /student/register:
+    post:
+      tags: [Student]
+      summary: Register student directly
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string }
+                password: { type: string }
+                branch: { type: string }
+                cgpa: { type: number, format: float }
+                year: { type: integer }
+                resume_url: { type: string }
+      responses:
+        '201':
+          description: Student registered
+
+  /student/drive:
+    get:
+      tags: [Student]
+      summary: View approved placement drives
+      parameters:
+        - name: cgpa
+          in: query
+          schema: { type: number, format: float }
+        - name: branch
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of available drives
+
+  /student/apply:
+    post:
+      tags: [Student]
+      summary: Apply to a placement drive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                drive_id: { type: integer }
+      responses:
+        '200':
+          description: Application successful
+        '400':
+          description: Eligibility criteria failed
+
+  /student/my-applications/{student_id}:
+    get:
+      tags: [Student]
+      summary: View applications by student ID
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Active applications and history
+
+  /student/edit-profile:
+    get:
+      tags: [Student]
+      summary: Get student profile for editing
+      responses:
+        '200':
+          description: Student profile data
+    put:
+      tags: [Student]
+      summary: Update student profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                branch: { type: string }
+                cgpa: { type: number, format: float }
+                year: { type: integer }
+                resume_url: { type: string }
+                name: { type: string }
+      responses:
+        '200':
+          description: Profile updated
+
+  /student/history:
+    get:
+      tags: [Student]
+      summary: Get complete application history
+      responses:
+        '200':
+          description: History retrieved
+
+  /student/export-history:
+    post:
+      tags: [Student]
+      summary: Trigger CSV export of application history
+      responses:
+        '202':
+          description: Export started

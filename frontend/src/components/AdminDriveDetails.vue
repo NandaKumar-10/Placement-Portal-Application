@@ -137,8 +137,7 @@ onMounted(() => {
 
 <style scoped>
 .font-sans { 
-  font-family: 'Inter', 
-  -apple-system, sans-serif; 
+  font-family: sans-serif; 
 }
 
 .sidebar { 
@@ -157,6 +156,6 @@ onMounted(() => {
 .bg-warning-subtle { 
   background-color: #fef3c7 !important; 
   color: #d97706 !important; 
-  }
+}
 
 </style>
