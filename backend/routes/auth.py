@@ -50,7 +50,7 @@ def company_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
-def student_requried(f):
+def student_required(f):
     @wraps(f)
     def decorated(current_user, *args, **kwargs):
         if current_user.role != 'Student':

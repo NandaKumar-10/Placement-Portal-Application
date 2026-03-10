@@ -110,10 +110,12 @@ def get_all_companies():
 @admin_required
 def delete_company(company_id):
     company = db.session.get(Company, company_id)
+    company_user = Users.query.filter_by(user_id = company.user_id).first()
     if not company:
         return jsonify({'error': 'Company not found'}), 404
             
     db.session.delete(company)
+    db.session.delete(company_user)
     db.session.commit()
     return jsonify({'message': 'Company deleted successfully'}), 200
 

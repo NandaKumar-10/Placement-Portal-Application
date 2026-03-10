@@ -1,14 +1,13 @@
-from flask import request, jsonify, Blueprint, current_app
+from flask import request, jsonify, Blueprint
 from model import *
-from .auth import token_required,student_requried
+from .auth import token_required,student_required
 import datetime
-from Cache import cache
 
 student_route = Blueprint("student_routes",__name__)
 
 @student_route.route('/student/dashboard', methods=['GET'])
 @token_required
-@student_requried
+@student_required
 def student_dashboard(current_user):
     student = Students.query.filter_by(user_id=current_user.user_id).first()
     
@@ -44,7 +43,7 @@ def student_dashboard(current_user):
 
 @student_route.route("/student/register", methods=['POST'])
 @token_required
-@student_requried
+@student_required
 def student_register():
     data = request.get_json()
     new_user = Users(
@@ -69,7 +68,7 @@ def student_register():
 
 @student_route.route('/student/drive', methods=['GET'])
 @token_required
-@student_requried
+@student_required
 def get_drives(current_user):
     student = Students.query.filter_by(user_id=current_user.user_id).first()
     
@@ -105,7 +104,7 @@ def get_drives(current_user):
 
 @student_route.route('/student/apply', methods=['POST'])
 @token_required
-@student_requried
+@student_required
 def apply_for_drive(current_user):
     data = request.get_json()
     drive_id = data.get('drive_id')
@@ -137,7 +136,7 @@ def apply_for_drive(current_user):
 
 @student_route.route('/student/my-applications/<int:student_id>', methods=['GET'])
 @token_required
-@student_requried
+@student_required
 def get_my_applications(student_id):
     apps = db.session.query(Application, PlacementDrive, Company)\
         .join(PlacementDrive, Application.drive_id == PlacementDrive.drive_id)\
@@ -165,7 +164,7 @@ def get_my_applications(student_id):
 
 @student_route.route('/student/edit-profile', methods=['GET', 'PUT'])
 @token_required
-@student_requried
+@student_required
 def manage_profile(current_user):
     student = Students.query.filter_by(user_id=current_user.user_id).first()
     
@@ -196,7 +195,7 @@ def manage_profile(current_user):
 
 @student_route.route('/student/history', methods=['GET'])
 @token_required
-@student_requried
+@student_required
 def get_my_history(current_user):
     student = Students.query.filter_by(user_id=current_user.user_id).first()
     if not student:
@@ -222,7 +221,7 @@ def get_my_history(current_user):
 
 @student_route.route('/student/export-history', methods=['POST'])
 @token_required
-@student_requried
+@student_required
 def trigger_export(current_user):
     from tasks import export_student_history_csv
     student = Students.query.filter_by(user_id=current_user.user_id).first()

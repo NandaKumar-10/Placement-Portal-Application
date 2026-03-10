@@ -6,7 +6,6 @@ from routes.admin import admin_routes
 from routes.auth import auth
 from routes.student import student_route
 from routes.company import company_route
-from flask_migrate import Migrate
 app = Flask(__name__)
 
 CORS(app,supports_credentials=True)
@@ -19,7 +18,6 @@ app.config['broker_url'] = 'redis://localhost:6379/0'
 app.config['result_backend'] = 'redis://localhost:6379/0'
 
 db.init_app(app)
-migrate = Migrate(app, db)
 
 cache.init_app(app)
 

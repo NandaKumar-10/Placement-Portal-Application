@@ -111,7 +111,7 @@
                 <th class="fw-semibold pb-3 border-0">Role</th>
                 <th class="fw-semibold pb-3 border-0">Date</th>
                 <th class="fw-semibold pb-3 border-0">Status</th>
-                <th class="fw-semibold pb-3 border-0 text-center">Action</th>
+                <th class="fw-semibold pb-3 border-0 text-end">Action</th>
               </tr>
             </thead>
             <tbody v-if="drives.length > 0">
@@ -121,7 +121,7 @@
                 <td class="py-3 border-light text-secondary">
                   {{ new Date(drive.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}
                 </td>
-                <td class="py-3 border-light text-center">
+                <td class="py-3 border-light">
                   <button @click="viewDriveDetails(drive.drive_id)" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
                     Details
                   </button>

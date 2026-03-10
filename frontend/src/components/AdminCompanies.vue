@@ -74,9 +74,6 @@
               <tr v-for="company in filteredCompanies" :key="company.company_id">
                 <td class="py-3 border-light fw-bold text-dark">
                   <div class="d-flex align-items-center">
-                    <div class="bg-blue-light text-primary rounded d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
-                      <i class="bi bi-building"></i>
-                    </div>
                     {{ company.company_name }}
                   </div>
                 </td>
@@ -97,7 +94,7 @@
                   <button v-if="company.approval_status !== 'Approved'" 
                           @click="updateStatus(company.company_id, true)" 
                           class="btn btn-sm btn-success me-2 rounded-3" title="Approve">
-                    <i class="bi bi-check-lg"></i>
+                    <i class="bi bi-check-lg">Approve</i>
                   </button>
                   
                   <button v-if="company.approval_status === 'Approved'" 

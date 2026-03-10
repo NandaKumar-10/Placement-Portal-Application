@@ -6,7 +6,6 @@ import datetime
 import smtplib
 from app import app
 from model import db, PlacementDrive, Users, Students, Application, Company
-from sqlalchemy import func
 import calendar
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart

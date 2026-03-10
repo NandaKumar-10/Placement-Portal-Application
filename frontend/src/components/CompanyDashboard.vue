@@ -9,7 +9,7 @@
       
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <router-link to="/company" class="nav-link active d-flex align-items-center">
+          <router-link to="/company/dashboard" class="nav-link active d-flex align-items-center">
             <i class="bi bi-speedometer2 me-3 fs-5"></i> Dashboard
           </router-link>
         </li>
@@ -43,7 +43,7 @@
         <div v-if="companyDetails.approval_status === 'Pending'" class="alert alert-warning border-0 shadow-sm rounded-4 d-flex align-items-center mb-4 p-3">
           <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
           <div>
-            <h6 class="fw-bold mb-1">Account Pending Approval</h6>
+            <h6 class="fw-bold mb-1">Account Approval Pending</h6>
             <p class="mb-0 small">Your account is currently under review by the administrator. You cannot create placement drives until you are approved.</p>
           </div>
         </div>
@@ -109,7 +109,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label small fw-semibold">Eligible Year</label>
-                <input type="number" class="form-control" v-model="newDrive.eligiblity_year" required>
+                <input type="number" class="form-control" v-model="newDrive.eligibility_year" required>
               </div>
               <div class="col-md-4">
                 <label class="form-label small fw-semibold">Application Deadline</label>
